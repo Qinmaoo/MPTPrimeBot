@@ -14,7 +14,7 @@ with open(parentPath + '/charlist.json') as f:
 def create_prime(player, character, reward, contact):
     print(f"{player} ({character}) - {reward} (by {contact})")
     
-    with open(parentPath + '/primes.json', 'r') as f:
+    with open(parentPath + '/primes.json', 'r', encoding='utf-8') as f:
         primes = json.load(f)
     
     json_to_append = {
@@ -22,11 +22,12 @@ def create_prime(player, character, reward, contact):
         "player_wanted": player,
         "caracters_played": character,
         "player_to_pay": contact,
+        "reward": reward,
         "is_claimed": False,
         "collected": False
     } 
     primes.append(json_to_append)
-    with open(parentPath + '/primes.json', 'w') as f:
+    with open(parentPath + '/primes.json', 'w', encoding='utf-8') as f:
         json.dump(primes, f)
 
 class Create(commands.Cog):

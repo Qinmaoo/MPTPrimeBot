@@ -1,1 +1,20 @@
-[{"id": 0, "player_wanted": "Joueur 1", "caracters_played": "Lucina", "player_to_pay": "Payeur 1", "is_claimed": false, "collected": false}, {"id": 1, "player_wanted": "Joueur 2", "caracters_played": "Lucina", "player_to_pay": "Payeur 2", "is_claimed": false, "collected": false}, {"id": 2, "player_wanted": "Dummy player", "caracters_played": "Mario", "player_to_pay": "qinmao", "is_claimed": false, "collected": false}]
+[
+    {
+        "id": 0,
+        "player_wanted": "Tilté",
+        "caracters_played": "Falco",
+        "player_to_pay": "qinmao",
+        "reward": "1 pinte",
+        "is_claimed": false,
+        "collected": false
+    },
+    {
+        "id": 1,
+        "player_wanted": "Azerty",
+        "caracters_played": "Kazuya",
+        "player_to_pay": "Tilté",
+        "reward": "1 pinte",
+        "is_claimed": false,
+        "collected": false
+    }
+]
