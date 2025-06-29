@@ -16,7 +16,7 @@
         "player_to_pay": null,
         "player_to_pay_id": "198193668228644864",
         "reward": "1 shot ptdrrr",
-        "is_claimed": false,
+        "is_claimed": true,
         "collected": false
     }
 ]

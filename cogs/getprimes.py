@@ -28,7 +28,7 @@ def get_primes(player: Optional[str], contact: Optional[str], guild: discord.Gui
         return member.display_name if member else str(contactid)
 
     # Ne garder que les primes non réclamées
-    primes = [p for p in primes if not p["is_claimed"]]
+    primes = [p for p in primes if not p["collected"]]
 
     # Appliquer les filtres
     def prime_matches(prime):
@@ -96,7 +96,7 @@ class GetPrimes(commands.Cog):
             is_collected = "✅" if prime["collected"] else "❌"
 
             embed.add_field(
-                name=f"# {prime['player_wanted']} ({prime['characters_played']})",
+                name=f"{prime['player_wanted']} ({prime['characters_played']})",
                 value=(
                     f"💰 **Récompense :** {prime['reward']}\n"
                     f"👤 **Payeur :** <@{contactid}>\n"
