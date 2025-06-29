@@ -1,0 +1,10 @@
+[
+    {
+        "id": 0,
+        "player_wanted": "Joueur",
+        "caracters_played": "Lucina",
+        "player_to_pay": "Payeur",
+        "is_claimed": false,
+        "collected": false
+    }
+]

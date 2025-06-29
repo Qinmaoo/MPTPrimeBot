@@ -8,9 +8,27 @@ import sys, io
 
 parentPath = os.path.dirname(os.path.abspath(__file__))
 
+with open(parentPath + '/charlist.json') as f:
+    charlist = json.load(f)
 
 def create_prime(player, character, reward, contact):
-    pass
+    print(f"{player} ({character}) - {reward} (by {contact})")
+    
+    with open(parentPath + '/primes.json', 'r') as f:
+        primes = json.load(f)
+    print(primes)
+    
+    json_to_append = {
+        "id": len(primes),
+        "player_wanted": player,
+        "caracters_played": character,
+        "player_to_pay": contact,
+        "is_claimed": False,
+        "collected": False
+    } 
+    primes.append(json_to_append)
+    with open(parentPath + '/primes.json', 'w') as f:
+        json.dump(primes, f)
 
 class Create(commands.Cog):
     def __init__(self, bot:commands.Bot) -> None:
@@ -29,8 +47,8 @@ class Create(commands.Cog):
     )
 
     @app_commands.choices(
-    character = [app_commands.Choice(name=gamemetadata["display_name"], value=gameid) for gameid, gamemetadata in game_list.items()],
-)
+        character = [app_commands.Choice(name=fighter.replace(' ',''), value=fighter) for fighter in charlist['fighters']],
+    )
     
     async def getbx(
         self,
@@ -64,3 +82,9 @@ class Create(commands.Cog):
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Create(bot))
+
+
+# Test command line
+
+if __name__ == '__main__':
+    create_prime('Joueur', 'Lucina', '1 pinte', 'Payeur')
