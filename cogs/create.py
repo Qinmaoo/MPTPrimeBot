@@ -73,7 +73,7 @@ class Create(commands.Cog):
         current: str
     ) -> list[app_commands.Choice[str]]:
         return [
-            app_commands.Choice(name=fighter, value=fighter)
+            app_commands.Choice(name=fighter.lower().replace(".",""), value=fighter)
             for fighter in charlist["fighters"]
             if current.lower() in fighter.lower()
         ][:25]  

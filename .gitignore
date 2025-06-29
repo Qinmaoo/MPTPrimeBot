@@ -3,3 +3,4 @@ venv/
 .vscode/
 cogs/__pycache__/
 cogs/primes.json
+chars/
