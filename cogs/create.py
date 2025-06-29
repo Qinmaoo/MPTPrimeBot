@@ -11,7 +11,7 @@ parentPath = os.path.dirname(os.path.abspath(__file__))
 with open(parentPath + '/charlist.json') as f:
     charlist = json.load(f)
 
-def create_prime(player, character, reward, contact):
+def create_prime(player, character, reward, contact, contactid):
     print(f"{player} ({character}) - {reward} (by {contact})")
     
     with open(parentPath + '/primes.json', 'r', encoding='utf-8') as f:
@@ -20,8 +20,9 @@ def create_prime(player, character, reward, contact):
     json_to_append = {
         "id": len(primes),
         "player_wanted": player,
-        "caracters_played": character,
+        "characters_played": character,
         "player_to_pay": contact,
+        "player_to_pay_id": str(contactid),
         "reward": reward,
         "is_claimed": False,
         "collected": False
@@ -54,9 +55,10 @@ class Create(commands.Cog):
     ) -> None:
         await interaction.response.defer(thinking=True)
 
-        contact = contact if contact else interaction.user.name
-
-        create_prime(player, character, reward, contact)
+        contact = contact if contact else None
+        contactid = None if contact else interaction.user.id
+        
+        create_prime(player, character, reward, contact, contactid)
 
         embed = discord.Embed(
             title=f"Nouvelle prime: {player} ({character}) - {reward}"

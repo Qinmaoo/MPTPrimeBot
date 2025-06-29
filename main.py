@@ -20,7 +20,6 @@ class MyBot(commands.Bot):
 	async def setup_hook(self):
 		self.session = aiohttp.ClientSession()
 
-		# Chargement des extensions
 		for ext in self.initial_extensions:
 			try:
 				await self.load_extension(ext)
@@ -28,7 +27,6 @@ class MyBot(commands.Bot):
 			except Exception as e:
 				print(f"Erreur lors du chargement de {ext}: {e}")
 
-		# Synchronisation des commandes
 		try:
 			global_commands = await self.tree.sync()
 			print(f"{len(global_commands)} commandes synchronisées globalement")

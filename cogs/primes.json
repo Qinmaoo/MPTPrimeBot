@@ -2,18 +2,20 @@
     {
         "id": 0,
         "player_wanted": "Tilté",
-        "caracters_played": "Falco",
-        "player_to_pay": "qinmao",
-        "reward": "1 pinte",
+        "characters_played": "Falco",
+        "player_to_pay": null,
+        "player_to_pay_id": "148179714803105792",
+        "reward": "2 pintes omg",
         "is_claimed": false,
         "collected": false
     },
     {
         "id": 1,
-        "player_wanted": "Azerty",
-        "caracters_played": "Kazuya",
-        "player_to_pay": "Tilté",
-        "reward": "1 pinte",
+        "player_wanted": "Qinmao",
+        "characters_played": "Hero",
+        "player_to_pay": null,
+        "player_to_pay_id": "198193668228644864",
+        "reward": "1 shot ptdrrr",
         "is_claimed": false,
         "collected": false
     }

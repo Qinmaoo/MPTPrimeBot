@@ -15,19 +15,33 @@ def load_primes():
         primes = json.load(f)
     return primes
 
-def get_primes(player, contact):    
+def get_primes(player: Optional[str], contact: Optional[str], guild: discord.Guild):    
     primes = load_primes()
-    if not player and not contact:
-        filter_primes = primes
-    elif player and contact:
-        filter_primes = list(filter(lambda prime: prime["player_wanted"] == player and prime["player_to_pay"] == contact, primes))
-    elif player:
-        filter_primes = list(filter(lambda prime: prime["player_wanted"] == player, primes))
-    elif contact:
-        filter_primes = list(filter(lambda prime: prime["player_to_pay"] == contact, primes))
-    
-    print(filter_primes)
-    return filter_primes
+
+    def resolve_contact_name(prime):
+        if prime["player_to_pay"]:
+            return prime["player_to_pay"]
+        contactid = prime.get("player_to_pay_id")
+        if not contactid:
+            return None
+        member = guild.get_member(int(contactid))
+        return member.display_name if member else str(contactid)
+
+    # Ne garder que les primes non réclamées
+    primes = [p for p in primes if not p["is_claimed"]]
+
+    # Appliquer les filtres
+    def prime_matches(prime):
+        if player and prime["player_wanted"] != player:
+            return False
+        if contact:
+            contact_display = resolve_contact_name(prime)
+            return contact_display == contact
+        return True
+
+    filtered_primes = [p for p in primes if prime_matches(p)]
+    print(filtered_primes)
+    return filtered_primes
 
 class GetPrimes(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
@@ -48,19 +62,49 @@ class GetPrimes(commands.Cog):
         contact: Optional[str],
     ) -> None:
         await interaction.response.defer(thinking=True)
+        guild = interaction.guild
 
-        data = get_primes(player, contact)
-
+        data = get_primes(player, contact, guild)
+        
+        if contact and contact.isdigit():
+            member = guild.get_member(int(contact))
+            if member:
+                contact_display = member.display_name
+            else:
+                contact_display = f"<@{contact}>"
+        else:
+            contact_display = contact
+            
+        if not player and not contact:
+            embed_title = "🏆 Primes en cours"
+        elif contact and not player:
+            embed_title = f"🏆 Primes posées par {contact_display}"
+        else:
+            embed_title = f"🏆 Prime sur {player}"
+        
+        
         embed = discord.Embed(
-            title="Primes récupérées"
+            title = embed_title,
+            color=discord.Color.gold()
         )
 
         for prime in data:
+            contact = prime['player_to_pay']
+            contactid = prime['player_to_pay_id']
+
+            is_claimed = "✅" if prime["is_claimed"] else "❌"
+            is_collected = "✅" if prime["collected"] else "❌"
+
             embed.add_field(
-                name=f"{prime['player_wanted']} ({prime['caracters_played']})",
-                value=f"Récompense: {prime['is_claimed']} - Payé par: {prime['player_to_pay']}",
+                name=f"# {prime['player_wanted']} ({prime['characters_played']})",
+                value=(
+                    f"💰 **Récompense :** {prime['reward']}\n"
+                    f"👤 **Payeur :** <@{contactid}>\n"
+                    f"📌 **Réclamée :** {is_claimed} | **Récupérée :** {is_collected}"
+                ),
                 inline=False
             )
+
 
         await interaction.followup.send(embed=embed)
 
@@ -86,7 +130,20 @@ class GetPrimes(commands.Cog):
     ) -> list[app_commands.Choice[str]]:
         
         primes = load_primes()
-        contacts = list(set(prime['player_to_pay'] for prime in primes))
+        guild = interaction.guild
+        
+        contacts = []
+        for prime in primes:
+            contact = prime['player_to_pay']
+            contactid = prime['player_to_pay_id']
+            if contact:
+                contacts.append(contact)
+            else: 
+                member = guild.get_member(int(contactid))
+                contact_display = member.display_name if member else contactid
+                contacts.append(contact_display)
+    
+        contacts = list(set(contacts))
         return [
             app_commands.Choice(name=c, value=c)
             for c in contacts if current.lower() in c.lower()
