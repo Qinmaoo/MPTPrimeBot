@@ -4,7 +4,7 @@ from discord.ext import commands
 import os
 import json
 from typing import Optional
-import sys, io
+import io
 
 parentPath = os.path.dirname(os.path.abspath(__file__))
 
@@ -16,7 +16,6 @@ def create_prime(player, character, reward, contact):
     
     with open(parentPath + '/primes.json', 'r') as f:
         primes = json.load(f)
-    print(primes)
     
     json_to_append = {
         "id": len(primes),
@@ -31,60 +30,51 @@ def create_prime(player, character, reward, contact):
         json.dump(primes, f)
 
 class Create(commands.Cog):
-    def __init__(self, bot:commands.Bot) -> None:
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
-    
-    @app_commands.command(
-        name = "create",
-        description = "Créer une prime"
-    )
-    
-    @app_commands.describe(
-        player = "Le joueur wanted",
-        character = "Son personnage à battre",
-        reward = "La récompense associée",
-        contact = "La personne qui paye"
-    )
 
-    @app_commands.choices(
-        character = [app_commands.Choice(name=fighter.replace(' ',''), value=fighter) for fighter in charlist['fighters']],
+    @app_commands.command(
+        name="create",
+        description="Créer une prime"
     )
-    
-    async def getbx(
+    @app_commands.describe(
+        player="Le joueur wanted",
+        character="Son personnage à battre",
+        reward="La récompense associée",
+        contact="La personne qui paye"
+    )
+    async def create(
         self,
         interaction: discord.Interaction,
         player: str,
-        character: app_commands.Choice[str],
+        character: str,
         reward: str,
         contact: Optional[str] = None
     ) -> None:
-        
         await interaction.response.defer(thinking=True)
 
-        id = interaction.user.id
-        character = character.value
-        contact = contact.value if contact else interaction.user.name
-        
-        data = create_prime(player, character, reward, contact)
-            
-        buffer = io.BytesIO()
-        data.save(buffer, format="PNG")
-        buffer.seek(0)
+        contact = contact if contact else interaction.user.name
 
-        file = discord.File(buffer, filename="image.png")
+        create_prime(player, character, reward, contact)
+
         embed = discord.Embed(
             title=f"Nouvelle prime: {player} ({character}) - {reward}"
         )
-        embed.set_image(url="attachment://image.png")
 
-        await interaction.followup.send(embed=embed, files=[file])
+        await interaction.followup.send(embed=embed)
 
+    @create.autocomplete('character')
+    async def character_autocomplete(
+        self,
+        interaction: discord.Interaction,
+        current: str
+    ) -> list[app_commands.Choice[str]]:
+        return [
+            app_commands.Choice(name=fighter, value=fighter)
+            for fighter in charlist["fighters"]
+            if current.lower() in fighter.lower()
+        ][:25]  
 
+# Setup du cog
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Create(bot))
-
-
-# Test command line
-
-if __name__ == '__main__':
-    create_prime('Joueur', 'Lucina', '1 pinte', 'Payeur')

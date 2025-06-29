@@ -6,8 +6,6 @@ import os
 
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-SERVER_ID = os.getenv("SERVER_ID")
-APP_ID = os.getenv("APP_ID")
 
 class MyBot(commands.Bot):
 
@@ -17,7 +15,7 @@ class MyBot(commands.Bot):
 			intents=discord.Intents.all()
 		)
 
-		self.initial_extensions = ["cogs.getprimes, cogs.getall, cogs.validate"]
+		self.initial_extensions = ["cogs.create", "cogs.getprimes", "cogs.validate"]
 	
 	async def setup_hook(self):
 		self.session = aiohttp.ClientSession()
