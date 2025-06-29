@@ -1,9 +1,17 @@
 [
     {
         "id": 0,
-        "player_wanted": "Joueur",
+        "player_wanted": "Joueur 1",
         "caracters_played": "Lucina",
-        "player_to_pay": "Payeur",
+        "player_to_pay": "Payeur 1",
+        "is_claimed": false,
+        "collected": false
+    },
+    {
+        "id": 1,
+        "player_wanted": "Joueur 2",
+        "caracters_played": "Lucina",
+        "player_to_pay": "Payeur 2",
         "is_claimed": false,
         "collected": false
     }
