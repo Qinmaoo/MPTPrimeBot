@@ -14,22 +14,30 @@ with open(parentPath + '/charlist.json') as f:
 def create_prime(player, character, reward, contact, contactid):
     print(f"{player} ({character}) - {reward} (by {contact})")
     
-    with open(parentPath + '/primes.json', 'r', encoding='utf-8') as f:
-        primes = json.load(f)
-    
-    json_to_append = {
-        "id": len(primes),
-        "player_wanted": player,
-        "characters_played": character,
-        "player_to_pay": contact,
-        "player_to_pay_id": str(contactid),
-        "reward": reward,
-        "is_claimed": False,
-        "collected": False
-    } 
-    primes.append(json_to_append)
-    with open(parentPath + '/primes.json', 'w', encoding='utf-8') as f:
-        json.dump(primes, f)
+    try:
+        with open(parentPath + '/primes.json', 'r', encoding='utf-8') as f:
+            primes = json.load(f)
+        
+        if len([prime for prime in primes if prime["player_wanted"] == player]) != 0:
+            return {"status":"failure", "output": "Ce joueur est déjà ciblé par une prime!"}
+            
+        json_to_append = {
+            "id": len(primes),
+            "player_wanted": player,
+            "characters_played": character,
+            "player_to_pay": contact,
+            "player_to_pay_id": str(contactid),
+            "reward": reward,
+            "is_claimed": False,
+            "collected": False
+        } 
+        primes.append(json_to_append)
+        with open(parentPath + '/primes.json', 'w', encoding='utf-8') as f:
+            json.dump(primes, f)
+        output = ""
+        return {"status":"success", "output": output}
+    except Exception as e:
+        return {"status":"failure", "output": f"Error: {e}"}
 
 class Create(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
@@ -58,13 +66,16 @@ class Create(commands.Cog):
         contact = contact if contact else None
         contactid = None if contact else interaction.user.id
         
-        create_prime(player, character, reward, contact, contactid)
+        data = create_prime(player, character, reward, contact, contactid)
+        if data["status"] == "failure":
+            await interaction.followup.send(content=data["output"], ephemeral=True)
+        
+        else:
+            embed = discord.Embed(
+                title=f"Nouvelle prime: {player} ({character}) - {reward}"
+            )
 
-        embed = discord.Embed(
-            title=f"Nouvelle prime: {player} ({character}) - {reward}"
-        )
-
-        await interaction.followup.send(embed=embed)
+            await interaction.followup.send(embed=embed)
 
     @create.autocomplete('character')
     async def character_autocomplete(
@@ -78,6 +89,5 @@ class Create(commands.Cog):
             if current.lower() in fighter.lower()
         ][:25]  
 
-# Setup du cog
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Create(bot))

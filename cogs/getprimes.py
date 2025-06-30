@@ -27,10 +27,8 @@ def get_primes(player: Optional[str], contact: Optional[str], guild: discord.Gui
         member = guild.get_member(int(contactid))
         return member.display_name if member else str(contactid)
 
-    # Ne garder que les primes non réclamées
     primes = [p for p in primes if not p["collected"]]
 
-    # Appliquer les filtres
     def prime_matches(prime):
         if player and prime["player_wanted"] != player:
             return False
