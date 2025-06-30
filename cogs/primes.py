@@ -5,6 +5,7 @@ import os
 import json
 from typing import Optional
 from cogs.claim_view import ClaimView
+from cogs.pagination_view import PrimesPaginationView
 from cogs.make_poster import create_wanted_poster
 
 parentPath = os.path.dirname(os.path.abspath(__file__))
@@ -51,7 +52,7 @@ class Primes(commands.Cog):
     )
     @app_commands.describe(
         player="Le joueur wanted",
-        contact="La personne qui paye"
+        contact="La personne qui paye",
     )
     async def primes(
         self,
@@ -61,6 +62,7 @@ class Primes(commands.Cog):
     ) -> None:
         
         await interaction.response.defer(thinking=True)
+        
         guild = interaction.guild
         data = get_primes(player, contact, guild)
         
@@ -76,7 +78,7 @@ class Primes(commands.Cog):
             title = embed_title,
             color=discord.Color.gold()
         )
-
+            
         for prime in data:
             contactid = prime['player_to_pay_id']
 
@@ -108,7 +110,28 @@ class Primes(commands.Cog):
                 view = ClaimView(prime_id=prime["id"], current_state=prime, author_id=interaction.user.id)
 
             await interaction.followup.send(embed=embed, view=view, file=file)
+        
+        elif len(data) > 10:
+            view = PrimesPaginationView(data, embed_title, interaction)
+            await view.send()
+
         else:
+            embed = discord.Embed(title=embed_title, color=discord.Color.gold())
+            for prime in data:
+                contactid = prime['player_to_pay_id']
+                paying_line = f"👤 **Payeur :** <@{contactid}>\n"
+                is_claimed = "✅" if prime["is_claimed"] else "❌"
+                is_collected = "✅" if prime["collected"] else "❌"
+
+                embed.add_field(
+                    name=f"{prime['player_wanted']} ({prime['characters_played']})",
+                    value=(
+                        f"💰 **Récompense :** {prime['reward']}\n"
+                        f"{paying_line}"
+                        f"📌 **Réclamée :** {is_claimed} | **Récupérée :** {is_collected}"
+                    ),
+                    inline=False
+                )
             await interaction.followup.send(embed=embed)
 
     @primes.autocomplete('player')
