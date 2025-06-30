@@ -53,7 +53,7 @@ def create_wanted_poster(player_wanted, character, reward, contact_display):
 
     draw_centered(player_text, player_y, player_font, center_x, (255, 0, 0))
     
-    character_path = os.path.join(CHARACTER_DIR, f"{character.lower().replace('/','').replace('.','')}.png")
+    character_path = os.path.join(CHARACTER_DIR, f"{character.lower().replace(' / ',' ').replace('.','')}.png")
     if os.path.exists(character_path):
         char_img = Image.open(character_path).convert("RGBA")
 

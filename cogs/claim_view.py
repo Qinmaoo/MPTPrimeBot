@@ -1,6 +1,8 @@
 import discord
 from discord.ui import View, button, Button
 import os, json
+from cogs.make_poster import create_wanted_poster
+from io import BytesIO
 
 parentPath = os.path.dirname(os.path.abspath(__file__))
 
@@ -40,7 +42,6 @@ class ClaimView(View):
             await interaction.response.send_message("❌ Tu ne peux pas claim cette prime.", ephemeral=True)
             return
 
-        # Mise à jour dans le JSON
         primes = load_primes()
         prime = None
         for p in primes:
@@ -51,7 +52,6 @@ class ClaimView(View):
         with open(parentPath + '/primes.json', 'w', encoding='utf-8') as f:
             json.dump(primes, f, indent=4, ensure_ascii=False)
 
-        # Reconstruction de l'embed
         is_claimed = "✅"
         is_collected = "✅" if prime["collected"] else "❌"
         contactid = prime["player_to_pay_id"]
@@ -70,9 +70,24 @@ class ClaimView(View):
             ),
             inline=False
         )
+        
+        await interaction.message.delete()
+        
+        guild = interaction.guild
+        member = guild.get_member(int(contactid))
+        contact_display = member.display_name
+        buffer = create_wanted_poster(
+            prime['player_wanted'],
+            prime["characters_played"],
+            prime["reward"],
+            contact_display
+        )
+        notify_string = f"<@{contactid}>, ta prime sur **{prime['player_wanted']}** a été claim par **{interaction.user.display_name}**! Va raquer {prime['reward']} :index_pointing_at_the_viewer:"
+        file = discord.File(buffer, filename="wanted.png")
+        updated_embed.set_image(url="attachment://wanted.png")
 
-        await interaction.response.edit_message(embed=updated_embed, view=None)
-        await interaction.followup.send(f"<@{contactid}>, ta prime sur **{prime['player_wanted']}** a été claim par **{interaction.user.display_name}**! Va raquer {prime['reward']} :index_pointing_at_the_viewer:")
+        await interaction.channel.send(content=notify_string, embed=updated_embed, file=file)
+        
 
 
     async def collect_callback(self, interaction: discord.Interaction):
