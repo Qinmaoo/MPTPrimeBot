@@ -15,7 +15,7 @@ class MyBot(commands.Bot):
 			intents=discord.Intents.all()
 		)
 
-		self.initial_extensions = ["cogs.create", "cogs.getprimes"]
+		self.initial_extensions = ["cogs.create", "cogs.primes"]
 	
 	async def setup_hook(self):
 		self.session = aiohttp.ClientSession()

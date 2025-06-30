@@ -13,3 +13,4 @@ pillow==11.2.1
 propcache==0.3.2
 python-dotenv==1.1.1
 yarl==1.20.1
+unidecode
