@@ -19,7 +19,8 @@ class ClaimView(View):
         self.claimed = current_state["is_claimed"]
         self.collected = current_state["collected"]
         self.author_id = author_id
-
+        self.payer_id = int(current_state["player_to_pay_id"])
+        
         if not self.claimed:
             self.claim_button = Button(label="Claim", style=discord.ButtonStyle.green)
             self.claim_button.callback = self.claim_callback
@@ -28,6 +29,11 @@ class ClaimView(View):
             self.collect_button = Button(label="Récupérer", style=discord.ButtonStyle.blurple)
             self.collect_button.callback = self.collect_callback
             self.add_item(self.collect_button)
+            
+        if author_id == self.payer_id:
+            self.delete_button = Button(label="🗑 Supprimer", style=discord.ButtonStyle.red)
+            self.delete_button.callback = self.delete_callback
+            self.add_item(self.delete_button)
 
     async def claim_callback(self, interaction: discord.Interaction):
         if interaction.user.id != self.author_id:
@@ -107,3 +113,15 @@ class ClaimView(View):
 
         await interaction.response.edit_message(embed=updated_embed, view=None)
 
+    async def delete_callback(self, interaction: discord.Interaction):
+        if interaction.user.id != self.payer_id:
+            await interaction.response.send_message("❌ Tu n'es pas le payeur de cette prime.", ephemeral=True)
+            return
+
+        primes = load_primes()
+        primes = [p for p in primes if p["id"] != self.prime_id]
+
+        with open(parentPath + '/primes.json', 'w', encoding='utf-8') as f:
+            json.dump(primes, f, indent=4, ensure_ascii=False)
+
+        await interaction.response.edit_message(content="🗑 La prime a été supprimée par le payeur.", embed=None, attachments=[], view=None)

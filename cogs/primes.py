@@ -100,9 +100,9 @@ class Primes(commands.Cog):
             prime = data[0]
             contactid = int(prime["player_to_pay_id"])
             member = guild.get_member(contactid)
-            contact_display = member.display_name if member else str(contactid)
+            payer_name = member.display_name if member else str(contactid)
             
-            buffer = create_wanted_poster(player, prime["characters_played"], prime["reward"], contact_display)
+            buffer = create_wanted_poster(prime["player_wanted"], prime["characters_played"], prime["reward"], payer_name)
             file = discord.File(buffer, filename="wanted.png")
             embed.set_image(url="attachment://wanted.png")
             
