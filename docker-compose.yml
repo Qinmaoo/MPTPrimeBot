@@ -3,8 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    volumes:
-      - ./MPTPrimeBot:/app/bot
+    # volumes:
+    #   - ./MPTPrimeBot:/app/bot
     working_dir: /app/bot
     command: python main.py
     restart: unless-stopped
