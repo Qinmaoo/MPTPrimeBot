@@ -1,0 +1,6 @@
+.env
+venv/
+.vscode/
+bot/cogs/__pycache__/
+bot/cogs/primes.json
+bot/chars/
