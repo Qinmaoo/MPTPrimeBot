@@ -92,6 +92,20 @@ class Edit(commands.Cog):
             )
         await interaction.followup.send(embed=embed)
 
+    @edit.autocomplete('player')
+    async def player_autocomplete(
+        self,
+        interaction: discord.Interaction,
+        current: str
+    ) -> list[app_commands.Choice[str]]:
+        
+        primes = load_primes()
+        primes = [p for p in primes if not p["collected"] and p["player_to_pay_id"] == interaction.user.id]
+        players = list(set(prime['player_wanted'] for prime in primes))
+        return [
+            app_commands.Choice(name=p, value=p)
+            for p in players if current.lower() in p.lower()
+        ][:25]
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Edit(bot))

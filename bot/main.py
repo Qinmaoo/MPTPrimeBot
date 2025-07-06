@@ -15,8 +15,7 @@ class MyBot(commands.Bot):
 			intents=discord.Intents.all()
 		)
 
-		self.initial_extensions = ["cogs.create", "cogs.primes"]
-		print(f"token bot {BOT_TOKEN}")
+		self.initial_extensions = ["cogs.create", "cogs.primes", "cogs.edit"]
 	
 	async def setup_hook(self):
 		self.session = aiohttp.ClientSession()
@@ -43,5 +42,4 @@ class MyBot(commands.Bot):
 		await self.session.close()
 
 bot = MyBot()
-print('bot token : ', BOT_TOKEN)
 bot.run(BOT_TOKEN)
