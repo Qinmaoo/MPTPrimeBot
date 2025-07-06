@@ -12,7 +12,7 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the bot files
-COPY bot/ .
+# COPY bot/ ./bot/
 
 # Command to run the bot
 CMD ["python", "main.py"]
