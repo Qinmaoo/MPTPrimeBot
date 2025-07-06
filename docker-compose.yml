@@ -1,0 +1,16 @@
+services:
+  discord-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./MPTPrimeBot:/app/bot
+    working_dir: /app/bot
+    command: python main.py
+    restart: unless-stopped
+    env_file: 
+      - .env
+
+networks:
+  default:
+    driver: bridge

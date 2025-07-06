@@ -16,6 +16,7 @@ class MyBot(commands.Bot):
 		)
 
 		self.initial_extensions = ["cogs.create", "cogs.primes"]
+		print(f"token bot {BOT_TOKEN}")
 	
 	async def setup_hook(self):
 		self.session = aiohttp.ClientSession()
@@ -42,4 +43,5 @@ class MyBot(commands.Bot):
 		await self.session.close()
 
 bot = MyBot()
+print('bot token : ', BOT_TOKEN)
 bot.run(BOT_TOKEN)
