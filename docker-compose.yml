@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     # volumes:
-    #   - ./MPTPrimeBot:/app/bot
+    #   - ./bot:/app/bot
     working_dir: /app/bot
     command: python main.py
     restart: unless-stopped

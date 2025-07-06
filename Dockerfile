@@ -4,7 +4,7 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Copy the requirements file
-COPY MPTPrimeBot/requirements.txt .
+COPY bot/requirements.txt .
 
 RUN pip install --upgrade pip
 
@@ -12,7 +12,7 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the bot files
-COPY MPTPrimeBot/ .
+COPY bot/ .
 
 # Command to run the bot
 CMD ["python", "main.py"]
