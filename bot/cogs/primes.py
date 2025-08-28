@@ -18,7 +18,7 @@ def load_primes():
         primes = json.load(f)
     return primes
 
-def get_primes(player: Optional[str], contact: Optional[str], guild: discord.Guild):    
+def get_primes(player: Optional[str], characters: Optional[str], contact: Optional[str], guild: discord.Guild):    
     primes = load_primes()
 
     def resolve_contact_name(prime):
@@ -32,6 +32,8 @@ def get_primes(player: Optional[str], contact: Optional[str], guild: discord.Gui
 
     def prime_matches(prime):
         if player and prime["player_wanted"] != player:
+            return False
+        if characters and prime["characters_played"] != characters:
             return False
         if contact:
             contact_display = resolve_contact_name(prime)
@@ -52,19 +54,21 @@ class Primes(commands.Cog):
     )
     @app_commands.describe(
         player="Le joueur wanted",
+        characters="Le(s) personnage(s) joué(s)",
         contact="La personne qui paye",
     )
     async def primes(
         self,
         interaction: discord.Interaction,
         player: Optional[str],
+        characters: Optional[str],
         contact: Optional[str],
     ) -> None:
         
         await interaction.response.defer(thinking=True)
         
         guild = interaction.guild
-        data = get_primes(player, contact, guild)
+        data = get_primes(player, characters, contact, guild)
         
         if not player and not contact:
             embed_title = "🏆 Primes en cours"
@@ -170,6 +174,21 @@ class Primes(commands.Cog):
         return [
             app_commands.Choice(name=c, value=c)
             for c in contacts if current.lower() in c.lower()
+        ][:25]
+    
+    @primes.autocomplete('characters')
+    async def characters_autocomplete(
+        self,
+        interaction: discord.Interaction,
+        current: str
+    ) -> list[app_commands.Choice[str]]:
+        
+        primes = load_primes()
+        primes = [p for p in primes if not p["collected"]]
+        characters = list(set(prime['characters_played'] for prime in primes))
+        return [
+            app_commands.Choice(name=c, value=c)
+            for c in characters if current.lower() in c.lower()
         ][:25]
 
 async def setup(bot: commands.Bot) -> None:
