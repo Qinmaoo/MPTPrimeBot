@@ -29,17 +29,24 @@ class PrimesPaginationView(discord.ui.View):
 
         for prime in primes_to_show:
             contactid = prime.get('player_to_pay_id')
-            contact_display = f"<@{contactid}>" if contactid else prime.get('player_to_pay', "Inconnu")
-
+            # contact_display = f"<@{contactid}>" if contactid else prime.get('player_to_pay', "Inconnu")
+            paying_line = f"👤 **Payeur :** <@{contactid}>\n"
             is_claimed = "✅" if prime["is_claimed"] else "❌"
             is_collected = "✅" if prime["collected"] else "❌"
-
+            claim_line = ""
+            if is_claimed == "✅":
+                contactid_claimer = prime.get("player_who_claimed_id")
+                if contactid_claimer:
+                    claim_line += f"📌 **Réclamée {is_claimed} par :** <@{contactid_claimer}>\n"
+            else:
+                claim_line += f"📌 **Réclamée :** {is_claimed}\n"
             embed.add_field(
                 name=f"{prime['player_wanted']} ({prime['characters_played']})",
                 value=(
                     f"💰 **Récompense :** {prime['reward']}\n"
-                    f"👤 **Payeur :** {contact_display}\n"
-                    f"📌 **Réclamée :** {is_claimed} | **Récupérée :** {is_collected}"
+                    f"{paying_line}"
+                    f"{claim_line}"
+                    f"**Récupérée :** {is_collected}"
                 ),
                 inline=False
             )
