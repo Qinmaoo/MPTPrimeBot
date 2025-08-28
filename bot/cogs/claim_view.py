@@ -42,11 +42,14 @@ class ClaimView(View):
             await interaction.response.send_message("❌ Tu ne peux pas claim cette prime.", ephemeral=True)
             return
 
+        contactid_claimer = interaction.user.id
+
         primes = load_primes()
         prime = None
         for p in primes:
             if p["id"] == self.prime_id:
                 p["is_claimed"] = True
+                p["player_who_claimed_id"] = str(contactid_claimer)
                 prime = p
                 break
         with open(parentPath + '/primes.json', 'w', encoding='utf-8') as f:
@@ -56,6 +59,7 @@ class ClaimView(View):
         is_collected = "✅" if prime["collected"] else "❌"
         contactid = prime["player_to_pay_id"]
         payer_line = f"👤 **Payeur :** <@{contactid}>\n"
+        claim_line = f"📌 **Réclamée :** {is_claimed} par :** <@{contactid_claimer}>\n"
 
         updated_embed = discord.Embed(
             title=interaction.message.embeds[0].title,
@@ -66,7 +70,8 @@ class ClaimView(View):
             value=(
                 f"💰 **Récompense :** {prime['reward']}\n"
                 f"{payer_line}"
-                f"📌 **Réclamée :** {is_claimed} | **Récupérée :** {is_collected}"
+                f"{claim_line}"
+                f"**Récupérée :** {is_collected}"
             ),
             inline=False
         )

@@ -27,6 +27,7 @@ def create_prime(player, character, reward, contactid, guild:discord.Guild):
             "player_wanted": player,
             "characters_played": character,
             "player_to_pay_id": str(contactid),
+            "player_who_claimed_id": None,
             "reward": reward,
             "is_claimed": False,
             "collected": False
