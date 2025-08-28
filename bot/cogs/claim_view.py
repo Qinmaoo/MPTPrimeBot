@@ -65,6 +65,7 @@ class ClaimView(View):
             title=interaction.message.embeds[0].title,
             color=discord.Color.gold()
         )
+        print(prime)
         updated_embed.add_field(
             name=f"{prime['player_wanted']} ({prime['characters_played']})",
             value=(
@@ -80,6 +81,7 @@ class ClaimView(View):
         
         guild = interaction.guild
         member = guild.get_member(int(contactid))
+        print(f"member: {member}")
         contact_display = member.display_name
         buffer = create_wanted_poster(
             prime['player_wanted'],
@@ -115,7 +117,9 @@ class ClaimView(View):
         is_claimed = "✅"
         is_collected = "✅"
         contactid = prime["player_to_pay_id"]
+        contactid_claimer = prime.get("player_who_claimed_id")
         payer_line = f"👤 **Payeur :** <@{contactid}>\n"
+        claim_line = f"📌 **Réclamée :** {is_claimed} par : <@{contactid_claimer}>\n"
 
         updated_embed = discord.Embed(
             title=interaction.message.embeds[0].title,
@@ -126,7 +130,8 @@ class ClaimView(View):
             value=(
                 f"💰 **Récompense :** {prime['reward']}\n"
                 f"{payer_line}"
-                f"📌 **Réclamée :** {is_claimed} | **Récupérée :** {is_collected}"
+                f"{claim_line}"
+                f"**Récupérée :** {is_collected}"
             ),
             inline=False
         )
