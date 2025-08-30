@@ -1,0 +1,172 @@
+[
+    {
+        "id": 0,
+        "player_wanted": "Baskoy",
+        "characters_played": "Sora",
+        "player_to_pay_id": "494741629198925824",
+        "player_who_claimed_id": "198193668228644864",
+        "reward": "1 pinte",
+        "is_claimed": true,
+        "collected": false
+    },
+    {
+        "id": 1,
+        "player_wanted": "BLS|Aspifouette",
+        "characters_played": "Palutena",
+        "player_to_pay_id": "494741629198925824",
+        "player_who_claimed_id": null,
+        "reward": "2 pintes",
+        "is_claimed": false,
+        "collected": false
+    },
+    {
+        "id": 2,
+        "player_wanted": "BLS|Aspifouette",
+        "characters_played": "Donkey Kong",
+        "player_to_pay_id": "494741629198925824",
+        "player_who_claimed_id": 240108631775772682,
+        "reward": "1 pinte",
+        "is_claimed": true,
+        "collected": false
+    },
+    {
+        "id": 3,
+        "player_wanted": "BLS|Kira Btw",
+        "characters_played": "Diddy Kong",
+        "player_to_pay_id": "494741629198925824",
+        "player_who_claimed_id": null,
+        "reward": "3 pintes",
+        "is_claimed": false,
+        "collected": false
+    },
+    {
+        "id": 4,
+        "player_wanted": "Funky Town",
+        "characters_played": "Pac Man",
+        "player_to_pay_id": "494741629198925824",
+        "player_who_claimed_id": "367696935349387275",
+        "reward": "1 demi",
+        "is_claimed": true,
+        "collected": false
+    },
+    {
+        "id": 5,
+        "player_wanted": "Error 404",
+        "characters_played": "Mr. Game & Watch",
+        "player_to_pay_id": "494741629198925824",
+        "player_who_claimed_id": "198193668228644864",
+        "reward": "1 pinte",
+        "is_claimed": true,
+        "collected": false
+    },
+    {
+        "id": 6,
+        "player_wanted": "BSK|Tomberry",
+        "characters_played": "Snake",
+        "player_to_pay_id": "494741629198925824",
+        "player_who_claimed_id": null,
+        "reward": "10 pintes",
+        "is_claimed": false,
+        "collected": false
+    },
+    {
+        "id": 7,
+        "player_wanted": "MPT|Abyss",
+        "characters_played": "Luigi",
+        "player_to_pay_id": "494741629198925824",
+        "player_who_claimed_id": null,
+        "reward": "1 calin",
+        "is_claimed": true,
+        "collected": false
+    },
+    {
+        "id": 8,
+        "player_wanted": "BLS|Tomikka",
+        "characters_played": "Steve",
+        "player_to_pay_id": "494741629198925824",
+        "player_who_claimed_id": null,
+        "reward": "1 pinte",
+        "is_claimed": false,
+        "collected": false
+    },
+    {
+        "id": 8,
+        "player_wanted": "Play4Glory",
+        "characters_played": "Wolf",
+        "player_to_pay_id": "494741629198925824",
+        "player_who_claimed_id": null,
+        "reward": "1 pinte",
+        "is_claimed": false,
+        "collected": false
+    },
+    {
+        "id": 9,
+        "player_wanted": "Owdy",
+        "characters_played": "Corrin",
+        "player_to_pay_id": "494741629198925824",
+        "player_who_claimed_id": null,
+        "reward": "1 pinte",
+        "is_claimed": false,
+        "collected": false
+    },
+    {
+        "id": 10,
+        "player_wanted": "Owomaltine",
+        "characters_played": "Greninja",
+        "player_to_pay_id": "345585095622656011",
+        "player_who_claimed_id": null,
+        "reward": "1 demi",
+        "is_claimed": false,
+        "collected": false
+    },
+    {
+        "id": 11,
+        "player_wanted": "Nexus",
+        "characters_played": "Mii Brawler",
+        "player_to_pay_id": "345585095622656011",
+        "player_who_claimed_id": null,
+        "reward": "1 demi",
+        "is_claimed": false,
+        "collected": false
+    },
+    {
+        "id": 12,
+        "player_wanted": "MPT|Clemclou",
+        "characters_played": "Piranha Plant",
+        "player_to_pay_id": "345585095622656011",
+        "player_who_claimed_id": null,
+        "reward": "1 demi",
+        "is_claimed": false,
+        "collected": false
+    },
+    {
+        "id": 13,
+        "player_wanted": "Ikonoha",
+        "characters_played": "Min Min",
+        "player_to_pay_id": "345585095622656011",
+        "player_who_claimed_id": null,
+        "reward": "1 demi",
+        "is_claimed": false,
+        "collected": false
+    },
+    {
+        "id": 14,
+        "player_wanted": "BLS|River",
+        "characters_played": "Greninja",
+        "player_to_pay_id": "309320440864571393",
+        "player_who_claimed_id": null,
+        "reward": "1 girafe",
+        "is_claimed": false,
+        "collected": false
+    },
+    {
+        "id": 16,
+        "player_wanted": "Fencer",
+        "characters_played": "Lucina",
+        "player_to_pay_id": "345585095622656011",
+        "player_who_claimed_id": null,
+        "reward": "1 demi",
+        "is_claimed": false,
+        "collected": false
+    }
+]

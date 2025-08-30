@@ -1,6 +1,6 @@
 import discord
 from discord.ui import View, Button
-
+from cogs.utils import create_message_classic
 class PrimesPaginationView(discord.ui.View):
     def __init__(self, data, embed_title, interaction: discord.Interaction):
         super().__init__(timeout=120)
@@ -16,8 +16,8 @@ class PrimesPaginationView(discord.ui.View):
 
         self.prev_button.callback = self.prev_page
         self.next_button.callback = self.next_page
-
-        self.add_item(self.prev_button)
+        
+        # self.add_item(self.prev_button)
         self.add_item(self.next_button)
 
     def build_embed(self):
@@ -28,32 +28,7 @@ class PrimesPaginationView(discord.ui.View):
         primes_to_show = self.data[start:end]
 
         for prime in primes_to_show:
-            contactid = prime.get('player_to_pay_id')
-            contactid_claimer = prime.get("player_who_claimed_id")
-            # contact_display = f"<@{contactid}>" if contactid else prime.get('player_to_pay', "Inconnu")
-            paying_line = f"👤 **Payeur :** <@{contactid}>\n"
-            is_claimed = "✅" if prime["is_claimed"] else "❌"
-            is_collected = "✅" if prime["collected"] else "❌"
-            claim_line = ""
-            if is_claimed == "✅":
-                print("is claimed")
-                print(f"prime: {prime}")
-                contactid_claimer = prime.get("player_who_claimed_id")
-                if contactid_claimer:
-                    claim_line += f"📌 **Réclamée {is_claimed} par :** <@{contactid_claimer}>\n"
-            else:
-                print("is not claimed")
-                claim_line += f"📌 **Réclamée :** {is_claimed}\n"
-            embed.add_field(
-                name=f"{prime['player_wanted']} ({prime['characters_played']})",
-                value=(
-                    f"💰 **Récompense :** {prime['reward']}\n"
-                    f"{paying_line}"
-                    f"{claim_line}"
-                    f"**Récupérée :** {is_collected}"
-                ),
-                inline=False
-            )
+            create_message_classic(prime, embed)
 
         embed.set_footer(text=f"Page {self.page + 1} / {self.max_pages + 1}")
         return embed
@@ -65,11 +40,17 @@ class PrimesPaginationView(discord.ui.View):
     async def prev_page(self, interaction: discord.Interaction):
         if self.page > 0:
             self.page -= 1
+            self.add_item(self.next_button)
+            if self.page == 0:
+                self.remove_item(self.prev_button)
             await interaction.response.edit_message(embed=self.build_embed(), view=self)
 
     async def next_page(self, interaction: discord.Interaction):
         if self.page < self.max_pages:
             self.page += 1
+            self.add_item(self.prev_button)
+            if self.page == self.max_pages:
+                self.remove_item(self.next_button)
             await interaction.response.edit_message(embed=self.build_embed(), view=self)
 
     async def on_timeout(self):

@@ -3,8 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    # volumes:
-    #   - ./bot:/app/bot
+    volumes:
+      - ./bot:/app/bot
     working_dir: /app/bot
     command: python main.py
     restart: unless-stopped

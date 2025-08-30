@@ -1,7 +1,9 @@
 import discord
-from discord.ui import View, button, Button
 import os, json
+
+from discord.ui import View, button, Button
 from cogs.make_poster import create_wanted_poster
+from cogs.utils import create_message_classic
 from io import BytesIO
 
 parentPath = os.path.dirname(os.path.abspath(__file__))
@@ -22,12 +24,13 @@ class ClaimView(View):
         self.collected = current_state["collected"]
         self.author_id = author_id
         self.payer_id = int(current_state["player_to_pay_id"])
-        
-        if not self.claimed:
+        self.claimer_id = int(current_state["player_who_claimed_id"]) if current_state["player_who_claimed_id"] else None
+
+        if not self.claimed and author_id != self.payer_id:
             self.claim_button = Button(label="Claim", style=discord.ButtonStyle.green)
             self.claim_button.callback = self.claim_callback
             self.add_item(self.claim_button)
-        elif self.claimed and not self.collected:
+        elif self.claimed and not self.collected and self.claimer_id and author_id == self.claimer_id:
             self.collect_button = Button(label="Récupérer", style=discord.ButtonStyle.blurple)
             self.collect_button.callback = self.collect_callback
             self.add_item(self.collect_button)
@@ -55,33 +58,19 @@ class ClaimView(View):
         with open(parentPath + '/primes.json', 'w', encoding='utf-8') as f:
             json.dump(primes, f, indent=4, ensure_ascii=False)
 
-        is_claimed = "✅"
-        is_collected = "✅" if prime["collected"] else "❌"
-        contactid = prime["player_to_pay_id"]
-        payer_line = f"👤 **Payeur :** <@{contactid}>\n"
-        claim_line = f"📌 **Réclamée :** {is_claimed} par :** <@{contactid_claimer}>\n"
-
         updated_embed = discord.Embed(
             title=interaction.message.embeds[0].title,
             color=discord.Color.gold()
         )
-        print(prime)
-        updated_embed.add_field(
-            name=f"{prime['player_wanted']} ({prime['characters_played']})",
-            value=(
-                f"💰 **Récompense :** {prime['reward']}\n"
-                f"{payer_line}"
-                f"{claim_line}"
-                f"**Récupérée :** {is_collected}"
-            ),
-            inline=False
-        )
+
+        contactid = prime["player_to_pay_id"]
+
+        create_message_classic(prime, updated_embed)
         
         await interaction.message.delete()
         
         guild = interaction.guild
         member = guild.get_member(int(contactid))
-        print(f"member: {member}")
         contact_display = member.display_name
         buffer = create_wanted_poster(
             prime['player_wanted'],
@@ -98,7 +87,7 @@ class ClaimView(View):
 
 
     async def collect_callback(self, interaction: discord.Interaction):
-        if interaction.user.id != self.author_id:
+        if interaction.user.id != self.author_id or (self.claimer_id and interaction.user.id != self.claimer_id):
             await interaction.response.send_message("❌ Tu ne peux pas récupérer cette prime.", ephemeral=True)
             return
 
@@ -113,29 +102,12 @@ class ClaimView(View):
         with open(parentPath + '/primes.json', 'w', encoding='utf-8') as f:
             json.dump(primes, f, indent=4, ensure_ascii=False)
 
-        # Reconstruction de l'embed
-        is_claimed = "✅"
-        is_collected = "✅"
-        contactid = prime["player_to_pay_id"]
-        contactid_claimer = prime.get("player_who_claimed_id")
-        payer_line = f"👤 **Payeur :** <@{contactid}>\n"
-        claim_line = f"📌 **Réclamée :** {is_claimed} par : <@{contactid_claimer}>\n"
-
         updated_embed = discord.Embed(
             title=interaction.message.embeds[0].title,
             color=discord.Color.gold()
         )
-        updated_embed.add_field(
-            name=f"{prime['player_wanted']} ({prime['characters_played']})",
-            value=(
-                f"💰 **Récompense :** {prime['reward']}\n"
-                f"{payer_line}"
-                f"{claim_line}"
-                f"**Récupérée :** {is_collected}"
-            ),
-            inline=False
-        )
 
+        create_message_classic(prime, updated_embed)
         await interaction.response.edit_message(embed=updated_embed, view=None)
 
     async def delete_callback(self, interaction: discord.Interaction):

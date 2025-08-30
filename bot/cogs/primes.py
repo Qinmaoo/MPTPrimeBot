@@ -1,26 +1,32 @@
 import discord
+import json
+import os
+
 from discord import app_commands
 from discord.ext import commands
-import os
-import json
 from typing import Optional
 from cogs.claim_view import ClaimView
 from cogs.pagination_view import PrimesPaginationView
 from cogs.make_poster import create_wanted_poster
+from cogs.utils import create_message_classic
 
 parentPath = os.path.dirname(os.path.abspath(__file__))
 
 with open(parentPath + '/charlist.json') as f:
     charlist = json.load(f)
 
+# Loader du json
 def load_primes():
     with open(parentPath + '/primes.json', 'r', encoding='utf-8') as f:
         primes = json.load(f)
     return primes
 
+# Recuperer les primes, selon les filtres passer en parametres
 def get_primes(player: Optional[str], characters: Optional[str], contact: Optional[str], guild: discord.Guild):    
     primes = load_primes()
+    primes = [p for p in primes if not p["collected"]]
 
+    # Recuperer le nom du contact
     def resolve_contact_name(prime):
         contactid = prime.get("player_to_pay_id")
         if not contactid:
@@ -28,8 +34,7 @@ def get_primes(player: Optional[str], characters: Optional[str], contact: Option
         member = guild.get_member(int(contactid))
         return member.display_name if member else str(contactid)
 
-    primes = [p for p in primes if not p["collected"]]
-
+    # Condition pour prendre les primes qui ont le bon player et le bon charactere
     def prime_matches(prime):
         if player and prime["player_wanted"] != player:
             return False
@@ -84,31 +89,8 @@ class Primes(commands.Cog):
         )
             
         for prime in data:
-            contactid = prime['player_to_pay_id']
+            create_message_classic(prime, embed)
 
-            paying_line = f"👤 **Payeur :** <@{contactid}>\n"
-            is_claimed = "✅" if prime["is_claimed"] else "❌"
-            is_collected = "✅" if prime["collected"] else "❌"
-            claim_line = ""
-            if is_claimed == "✅":
-                print("is claimed")
-                print(f"prime: {prime}")
-                contactid_claimer = prime.get("player_who_claimed_id")
-                if contactid_claimer:
-                    claim_line += f"📌 **Réclamée {is_claimed} par :** <@{contactid_claimer}>\n"
-            else:
-                print("is not claimed")
-                claim_line += f"📌 **Réclamée :** {is_claimed}\n"
-            embed.add_field(
-                name=f"{prime['player_wanted']} ({prime['characters_played']})",
-                value=(
-                    f"💰 **Récompense :** {prime['reward']}\n"
-                    f"{paying_line}"
-                    f"{claim_line}"
-                    f"**Récupérée :** {is_collected}"
-                ),
-                inline=False
-            )
 
         if len(data) == 1:
             prime = data[0]
@@ -132,27 +114,7 @@ class Primes(commands.Cog):
         else:
             embed = discord.Embed(title=embed_title, color=discord.Color.gold())
             for prime in data:
-                contactid = prime['player_to_pay_id']
-                paying_line = f"👤 **Payeur :** <@{contactid}>\n"
-                is_claimed = "✅" if prime["is_claimed"] else "❌"
-                is_collected = "✅" if prime["collected"] else "❌"
-                claim_line = ""
-                if is_claimed == "✅":
-                    contactid_claimer = prime.get("player_who_claimed_id")
-                    if contactid_claimer:
-                        claim_line += f"📌 **Réclamée {is_claimed} par :** <@{contactid_claimer}>\n"
-                else:
-                    claim_line += f"📌 **Réclamée :** {is_claimed}\n"
-                embed.add_field(
-                    name=f"{prime['player_wanted']} ({prime['characters_played']})",
-                    value=(
-                        f"💰 **Récompense :** {prime['reward']}\n"
-                        f"{paying_line}"
-                        f"{claim_line}"
-                        f"**Récupérée :** {is_collected}"
-                    ),
-                    inline=False
-                )
+                create_message_classic(prime, embed)
             await interaction.followup.send(embed=embed)
 
     @primes.autocomplete('player')
